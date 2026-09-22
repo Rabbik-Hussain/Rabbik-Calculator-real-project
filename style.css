@@ -1,0 +1,376 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px 12px;
+    transition: background-color 0.3s ease;
+}
+
+/* Calculator Container */
+.calculator {
+    width: 100%;
+    max-width: 360px;
+    padding: 16px;
+    border-radius: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+}
+
+/* =========================================================
+   UPDATED: Toggle Switch Styles (Sun & Moon Icons)
+   ========================================================= */
+.mode-toggle-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 0 4px;
+}
+
+.mode-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* সুইচটির সাইজ বড় ও চওড়া করা হয়েছে */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;  /* আগে ছিল 46px */
+    height: 30px; /* আগে ছিল 24px */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* ব্যাকগ্রাউন্ড স্টাইলিং ও শ্যাডো */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #1e293b;
+    transition: 0.4s;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+}
+
+/* সুইচের গোলাকার গোলক (Circle Thumb) */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #ffffff;
+    transition: 0.4s ease;
+    z-index: 2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* সূর্য এবং চাঁদের আইকন স্টাইল */
+.slider .icon {
+    font-size: 13px;
+    z-index: 1;
+    user-select: none;
+    transition: opacity 0.3s ease;
+}
+
+.slider .sun-icon {
+    opacity: 0.4;
+}
+
+.slider .moon-icon {
+    opacity: 1;
+}
+
+/* ডে মোডে ব্যাকগ্রাউন্ড এবং গোলকের পজিশন পরিবর্তন */
+input:checked + .slider {
+    background-color: #9724fb; /* ডে মোডে সুন্দর বেগুনি কালার */
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px); /* ডানে সরবে */
+    background-color: #ffffff;
+}
+
+input:checked + .slider .sun-icon {
+    opacity: 1;
+}
+
+input:checked + .slider .moon-icon {
+    opacity: 0.4;
+}
+
+.slider.round {
+    border-radius: 30px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Display Screen */
+.display-container {
+    border-radius: 16px;
+    padding: 14px 16px;
+    text-align: right;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 90px;
+    word-break: break-all;
+    transition: background-color 0.3s ease;
+}
+
+.previous-operand {
+    font-size: 0.9rem;
+    min-height: 1.2rem;
+    margin-bottom: 2px;
+}
+
+.current-operand {
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1.1;
+    transition: color 0.3s ease;
+}
+
+/* Keypad Grid */
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+/* Common Button Style */
+.btn {
+    aspect-ratio: 1 / 1;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    user-select: none;
+    transition: transform 0.05s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.15s ease;
+}
+
+.btn:active {
+    transform: translateY(2px);
+}
+
+.btn-equal {
+    grid-column: span 2;
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 48px;
+    border-radius: 14px;
+    font-size: 1.5rem;
+}
+
+.btn-pm {
+    grid-column: span 2;
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 48px;
+    border-radius: 14px;
+    font-size: 1.3rem;
+}
+
+.btn-ac:hover, .btn-ac:active,
+.btn-operator:hover, .btn-operator:active,
+.btn-equal:hover, .btn-equal:active {
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5),
+                inset 0 -2px 4px rgba(255, 255, 255, 0.2);
+}
+
+/* =========================================================
+   1. NIGHT MODE THEME (DEFAULT)
+   ========================================================= */
+body.night-mode {
+    background-color: #ddd;
+}
+
+body.night-mode .calculator {
+    background-color: #12161f;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.night-mode .mode-label {
+    color: #ffffff;
+}
+
+body.night-mode .display-container {
+    background-color: #e3e8ee;
+}
+
+body.night-mode .previous-operand {
+    color: #64748b;
+}
+
+body.night-mode .current-operand {
+    color: #0040ff; /* নাইট মোডে উত্তর আসবে নীল রঙের */
+}
+
+/* নাইট মোডে বাটন টেক্সট কালার: সাদা */
+body.night-mode .btn {
+    color: #ffffff;
+}
+
+body.night-mode .btn-number {
+    background-color: #1e232d;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+/* নাইট মোডে লাল বাটনগুলো: গাঢ় লাল */
+body.night-mode .btn-ac, 
+body.night-mode .btn-del,
+body.night-mode .btn-equal {
+    background-color: #9000ff;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* নাইট মোডে সবুজ বাটনগুলো: হালকা সবুজ / আসমানি (Cyan-Green) */ 
+body.night-mode .btn-bracket, 
+body.night-mode .btn-operator, 
+body.night-mode .btn-pm {
+    background-color: #08cef1;
+    color: black;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+body.night-mode .btn-ac:hover{
+    box-shadow: inset 8px 8px 16px rgba(0, 0, 0, 0.15) , -4px -4px 8px black;
+    background-color: red;
+    color: black;
+}
+body.night-mode .btn-equal:hover{
+    box-shadow: inset 8px 8px 16px rgba(0, 0, 0, 0.15) , -4px -4px 8px black ;
+    background-color: #6fb505;
+    color: black;
+}
+body.night-mode .btn-operator:hover{
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.15) , -4px -4px 8px black ;
+}
+
+
+/* =========================================================
+   2. DAY MODE THEME
+   ========================================================= */
+body.day-mode {
+    background-color: #8c8686; /* ব্যাকগ্রাউন্ড সাদা */
+}
+
+body.day-mode .calculator {
+    background-color: #ffffff; /* ক্যালকুলেটরের বডি সাদা */
+    box-shadow: 10px 10px 30px  rgba(19, 9, 1, 0.5);
+    border: 1px solid #e0e0e0;
+}
+
+body.day-mode .mode-label {
+    color: #000000;
+}
+
+body.day-mode .display-container {
+    background-color: #f1f5f9;
+}
+
+body.day-mode .previous-operand {
+    color: #64748b;
+}
+
+body.day-mode .current-operand {
+    color: #000000; /* ডে মোডে উত্তর আসবে কালো রঙের */
+}
+
+/* ডে মোডে সমস্ত বাটনের টেক্সট: কালো */
+body.day-mode .btn {
+    color: #000000;
+}
+
+/* ডে মোডে নম্বর বাটনগুলো: ব্যাকগ্রাউন্ড সাদা, টেক্সট কালো */
+body.day-mode .btn-number {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ডে মোডে লাল বাটনগুলো: গাঢ় নীল (Dark Blue) */
+body.day-mode .btn-ac, 
+body.day-mode .btn-del,
+body.day-mode .btn-equal {
+    background-color: blue;
+    color: #ffffff;
+    font-weight: bold; /* গাঢ় নীল বাটনে টেক্সট ফুটানোর জন্য */
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15) , -4px -4px 8px #fff ;
+}
+
+/* ডে মোডে সবুজ বাটনগুলো: গাঢ় সবুজ (Dark Green) */ 
+body.day-mode .btn-bracket, 
+body.day-mode .btn-operator, 
+body.day-mode .btn-pm {
+    background-color: #ffd92f;
+    color: black;
+    font-weight: bold; 
+    font-size: 1.2rem;/* গাঢ় সবুজ বাটনে টেক্সট ফুটানোর জন্য */
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15) , -4px -4px 8px #fff ;
+}
+
+body.day-mode .btn-ac:hover{
+    box-shadow: inset 8px 8px 16px rgba(0, 0, 0, 0.15) , -4px -4px 8px #fff;
+    background-color: red;
+}
+body.day-mode .btn-equal:hover{
+    box-shadow: inset 8px 8px 16px rgba(0, 0, 0, 0.15) , -4px -4px 8px #fff ;
+    background-color: #7ac904;
+    color: black;
+}
+body.day-mode .btn-operator:hover{
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.15) , -4px -4px 8px #fff ;
+}
+
+/* Responsive Media Queries (<360px) */
+@media (max-width: 360px) {
+    .calculator {
+        padding: 12px;
+        gap: 10px;
+    }
+    .keypad {
+        gap: 8px;
+    }
+    .btn {
+        border-radius: 10px;
+        font-size: 1.1rem;
+    }
+    .current-operand {
+        font-size: 1.8rem;
+    }
+}
